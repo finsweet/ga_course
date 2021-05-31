@@ -1,0 +1,21 @@
+<script>
+  // Get all checkout items stored by the cookie.
+  // Use JSON.parse to convert the cookie string to an object.
+  let checkout_items = JSON.parse(Cookies.get("checkout_items"));
+  /** when the page is loaded send purchase event **/
+  // get totals (goods+shipping) spent from div.
+  let total_cost = getPrice($(".total").text());
+  // get value of goods spent from .subtotal div.
+  let value = getPrice($(".subtotal").text());
+  // get cost of shipping from div.
+  let shipping_cost = getPrice($(".shipping").text());
+  // send a purchase event to gtag. Set currency, items and value keys according to data.
+  gtag("event", "purchase", {
+    currency: "USD",
+    items: checkout_items,
+    transaction_id: "T_12345",
+    coupon: Cookies.get("coupon_code"),
+    value: total_cost,
+    shipping: shipping_cost,
+  });
+</script>

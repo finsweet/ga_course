@@ -1,0 +1,17 @@
+<script>
+  /* Send data for visit duration */
+  // Get visit time of the user
+  let start_visit = Cookies.get("visit_time");
+  // convert it into a date
+  let start_visit_time = Date.parse(start_visit);
+  end_visit_time = new Date();
+  let visit_timeDiff = end_visit_time - start_visit_time; //in ms
+  // strip the ms
+  visit_timeDiff /= 1000;
+  // get visit duration in minutes
+  let visit_duration = Math.round(visit_timeDiff / 60);
+  // Send custom event data for our timer.
+  gtag("event", "visitDuration", {
+    duration: visit_duration,
+  });
+</script>

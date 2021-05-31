@@ -1,0 +1,24 @@
+<script>
+  /*Get the days before a purchase*/
+  // Find the value of one day in milliseconds
+  const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+  // Get date when a user first visited the website.
+  let firstDate = Cookies.get("visit_time");
+  // Get the date right now.
+  let now = new Date();
+  // Find the difference between the two days
+  let diffDays = Math.round(Math.abs((firstDate - now) / oneDay));
+  // if zero is the difference it means purchase was made in a single session
+  if (diffDays === 0) {
+    let sessionBeforePurchase = 1;
+  } else {
+    // session before purchse are equeal to the number of days before purchase
+    let sessionBeforePurchase = diffDays;
+  }
+  // Delete the visit time cookie
+  Cookies.remove("visit_time");
+  // Send event data to GA4
+  gtag("event", "sessions_to_purchase", {
+    value: sessionBeforePurchase,
+  });
+</script>

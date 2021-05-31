@@ -1,0 +1,22 @@
+<script>
+  // Listener for the add to cart button.
+  $(".w-commerce-commerceaddtocartbutton").click(() => {
+     // Cont...
+     // Send product data when the add to cart button is clicked.
+     // In the data object the "value" key represents total monetary
+     // value of the event hence, value*quantity
+     gtag('event', 'add_to_cart_enhanced', {
+         currency: 'USD',
+         items: [{
+             item_id: sku,
+             item_name: product_name,
+             item_category: product_category,
+             price: product_price,
+              coupon: discount_code,
+             currency: 'USD',
+             quantity: quantity
+         }],
+         value: product_price * quantity
+     });
+  })
+</script>

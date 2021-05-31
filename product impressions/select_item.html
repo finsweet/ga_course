@@ -1,0 +1,41 @@
+<script>
+  /**
+     Recommended event: select_item
+    Listener for any product item click that indicates the user is interested.
+    In this example, we send the event when the user clicks on the secondary button
+    This button gives the user infomration about the product without viewing the product page
+     When a user views the product page, user the view_item event.
+    **/
+
+  $(".trigger-select-gtag").click((event) => {
+    // get div that holds an item
+    let collection_item = $(event.target).closest(".cta-card-padding");
+    // Get the list name
+    let list_name = "Home page";
+    // Variable for the name of the product
+    let product_name = collection_item.find("h2").text();
+    // Variable for the category of the product
+    let product_category = collection_item.find(".label").text();
+    // Variable for the sku of the product
+    let sku = collection_item.find(".sku").text();
+    // Get the price of the product
+    let price = getPrice(collection_item.find(".button.outline").text());
+    // Store product details in a GA4 object
+    let item = {
+      item_id: sku,
+      item_name: product_name,
+      item_category: product_category,
+      price: price,
+      quantity: 1,
+      item_list_name: list_name,
+      item_list_id: list_name,
+      currency: "USD",
+    };
+    // send data to the select item event.
+    gtag("event", "select_item", {
+      items: [item],
+      item_list_name: list_name,
+      item_list_id: list_name,
+    });
+  });
+</script>

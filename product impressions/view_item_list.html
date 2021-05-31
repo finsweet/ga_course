@@ -1,0 +1,70 @@
+<script>
+  // Extracts Number of type float from a string
+  function getPrice(text_with_numbers) {
+    // remove all commas
+    text_with_numbers = text_with_numbers.replace(",", "");
+    let regex = /[+-]?\d+(\.\d+)?/g;
+    if (text_with_numbers.match(regex)) {
+      let floats = text_with_numbers.match(regex).map(function (v) {
+        return parseFloat(v);
+      });
+      return floats[0];
+    } else {
+      return 0;
+    }
+  }
+
+  // listener for when webpage is loaded.
+  $(document).ready(() => {
+    // Get the list name
+    let list_name = "Products";
+    // initialize an array to carry objects with product details.
+    all_items = [];
+    // initialize an array to carry promotion objects with product details.
+    promotion_items = [];
+    //  Loop through all products in a list.
+    $(".card-grid > .w-dyn-item").each((index, element) => {
+      // Variable for the name of the product
+      let product_name = $(element).find("h4").text();
+      // Variable for the category of the product
+      let product_category = $(element).find(".label").text();
+      // Variable for the sku of the product
+      let sku = $(element).find(".sku").text();
+      // Get the price of the product
+      let price = getPrice($(element).find(".card-price").text());
+      // Get compare at price
+      let compare_price = getPrice($(element).find(".compare-at-price").text());
+      // Get Discount
+      let discount = 0;
+      // Make sure compare price is above 0 b4 calculating discount.
+      if (compare_price > 0) {
+        discount = compare_price - price;
+      }
+      // Store product details in a GA4 object
+      let item = {
+        item_id: sku,
+        item_name: product_name,
+        item_category: product_category,
+        price: price,
+        discount: discount,
+        quantity: 1,
+        index: index,
+        item_list_name: list_name,
+        item_list_id: list_name,
+        currency: "USD",
+      };
+      // Add object to the array that will hold all product objects.
+      all_items.push(item);
+    }); // end of each loop    /* Add view item list event */
+    // check if there are products on the array
+    if (all_items.length > 0) {
+      // send data via gtag.
+      // Our all_items array is added to the 'items' key in our GA4 object.
+      gtag("event", "view_item_list", {
+        items: all_items,
+        item_list_name: list_name,
+        item_list_id: list_name,
+      });
+    } // end if statement
+  });
+</script>

@@ -1,0 +1,29 @@
+<script>
+  // Get all checkout items stored by the cookie.
+  //Use JSON.parse to convert the cookie string to an object.
+  let checkout_items = JSON.parse(Cookies.get("checkout_items"));
+  // get totals (goods+shipping) spent from div.
+  let total_cost = formatCurrency($(".total").text());
+  let coupon_code = "";
+
+  /**Listener for applying a coupon code**/
+  $(".w-commerce-commercecheckoutdiscountsbutton").click(() => {
+    coupon_code = $(".w-commerce-commercecheckoutdiscountsinput").val();
+    // add the coupon code cookie for the next page (order confirmation).
+    Cookies.set("coupon_code", coupon_code);
+  });
+
+  /** listener for when the Place order button is clicked **/
+  $(".w-commerce-commercecheckoutplaceorderbutton").click(() => {
+    //  send add_payment_info event
+    gtag("event", "add_payment_info", {
+      currency: "USD",
+      items: checkout_items,
+      payment_type: "Credit card",
+      coupon: coupon_code,
+      value: total_cost,
+    });
+
+    //...
+  });
+</script>

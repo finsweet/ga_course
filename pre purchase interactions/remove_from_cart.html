@@ -1,0 +1,43 @@
+<script>
+  // Listener for the remove button.
+  $(document).on("click", ".cart-remove-text", (event) => {
+    // get the div for the product to be removed
+    let productdiv = $(event.target).closest(".order-item");
+    // find sku from within our product div
+    let sku_text = productdiv.find(".sku").text();
+    // find .price from within our product div change to a number
+    let price_text = getNumber(productdiv.find(".price").text());
+    // find .compare-at-price from within our product div change to a number
+    let compare_price = getNumber(productdiv.find(".compare-atprice").text());
+    // Get a dicount code
+    let coupon = productdiv.find(".dsc-code").text();
+    // Calculate discount.
+    let discount = 0;
+    if (compare_price > 0) {
+      discount = compare_price - price_text;
+    }
+    // extract product name from the product div
+    let product_text = productdiv
+      .find(".margin-bottom-small.mobile-text-centre")
+      .text();
+    // Get quantity
+    let quantity_text = productdiv.find(".cart-quantity").attr("value");
+    quantity_text = getNumber(quantity_text);
+    // send data when item is removed from a cart
+    gtag("event", "remove_from_cart", {
+      currency: "USD",
+      items: [
+        {
+          item_id: sku_text,
+          item_name: product_text,
+          price: price_text,
+          coupon: coupon,
+          discount: discount,
+          currency: "USD",
+          quantity: quantity_text,
+        },
+      ],
+      value: price_text * quantity_text,
+    });
+  });
+</script>

@@ -1,0 +1,67 @@
+<script>
+  // Listener for any product click.
+  $(".card-item").click((event) => {
+    // get collection list item
+    let collection_item = $(event.target).closest(".w-dyn-item");
+    // Get the list name
+    let list_name = "Products";
+    // Variable for the name of the product
+    let product_name = collection_item.find("h4").text();
+    // Variable for the category of the product
+    let product_category = collection_item.find(".label").text();
+    // Variable for the sku of the product
+    let sku = collection_item.find(".sku").text();
+    // Get the price of the product
+    let price = getPrice(collection_item.find(".product-price").text());
+    // Get compare at price
+    let compare_price = getPrice(
+      collection_item.find(".compare-at-price").text()
+    );
+    // Get Discount
+    let discount = 0;
+    // Make sure compare price is above 0 b4 calculating discount.
+    if (compare_price > 0) {
+      discount = compare_price - price;
+    }
+    // A variable indicating if item has promotion.
+    let isPromotion = false;
+    // Check if a discount code is available for item
+    let discount_code = collection_item.find(".discount-code").text();
+    // Change the isPromotion value to true if discount exists.
+    if (discount_code !== "") {
+      isPromotion = true;
+    }
+    // Store product details in a GA4 object
+    let item = {
+      item_id: sku,
+      item_name: product_name,
+      item_category: product_category,
+      price: price,
+      discount: discount,
+      quantity: 1,
+      item_list_name: list_name,
+      item_list_id: list_name,
+      currency: "USD",
+    };
+    
+    //Cont ...
+
+    // send data to the select promotion event.
+    if (isPromotion == true) {
+      // copy the item object
+      let promotion_item = JSON.parse(JSON.stringify(item));
+      // Add promotion specific data to promotion item.
+      promotion_item["coupon"] = collection_item.find(".discount-code").text();
+      promotion_item["promotion_id"] = collection_item
+        .find(".discount-code")
+        .text();
+      promotion_item["promotion_name"] = collection_item
+        .find(".discount-name")
+        .text();
+      gtag("event", "select_promotion", {
+        items: [promotion_item],
+        location_id: "L_12345",
+      });
+    } // end of if statement
+  });
+</script>

@@ -1,0 +1,51 @@
+<script>
+    // Extracts Number of type float from a string
+    function getPrice(text_with_numbers) {
+       // remove all commas
+       text_with_numbers = text_with_numbers.replace(',', '')
+       let regex = /[+-]?\d+(\.\d+)?/g;
+       if (text_with_numbers.match(regex)) {
+           let floats = text_with_numbers.match(regex).map(function (v) {
+               return parseFloat(v);
+           });
+           return floats[0]
+       }
+       else { return 0 }
+    }
+    
+    $(document).ready(() => {
+       // variable for the product name
+       let product_name = "name"
+       // variable for the product category
+       let product_category = "type"
+       // variable for product price.
+       let product_price = getPrice("price")
+       // variable for compare at price
+       let compare_price = getPrice("compare-at-price")
+       // Calculate discount
+       let discount = 0
+       if (compare_price > 0) {
+           discount = compare_price - product_price
+       }
+       // the sku variable
+       let sku = "sku"
+       //...
+       // get the quantity variable is 1 in when viewing an product.
+       let quantity = 1
+       // add all product variables to a GA4 object
+       let item = {
+           item_id: sku,
+           item_name: product_name,
+           item_category: product_category,
+           discount: discount,
+           price: product_price,
+           currency: 'USD',
+           quantity: quantity
+       }    // Send product data via gtag to the "view_item" event.
+       gtag('event', 'view_item', {
+           currency: 'USD',
+           items: [item],
+           value: product_price
+       })
+    })
+    </script>

@@ -1,0 +1,17 @@
+<script>
+  /* Send data for purchase time */
+  // Get start time string
+  let start_text = Cookies.get("shopping_start");
+  // convert it into a date
+  let startTime = Date.parse(start_text);
+  endTime = new Date();
+  let timeDiff = endTime - startTime; //in ms
+  // strip the ms
+  timeDiff /= 1000;
+  // get minutes
+  let timeToPurchase = Math.round(timeDiff / 60);
+  // Send custom event data for our timer.
+  gtag("event", "time_to_purchase", {
+    value: timeToPurchase,
+  });
+</script>

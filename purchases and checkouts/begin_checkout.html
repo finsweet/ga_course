@@ -1,0 +1,52 @@
+<script>
+  // listener for the cart checkout buttons div.
+  $("#all-checkout-buttons").click((event) => {
+     let allItems = []
+     let coupon_text = "";
+      let value = 0;
+     // find all product in the cart
+     $(".w-commerce-commercecartitem").each((index, element) => {
+         // get div the product information
+         let productdiv = $(element)        // find sku from within our product div
+         let sku_text = productdiv.find(".sku").text()
+         // get the price from productdiv then change it to a number.
+         let price_text = getNumber(productdiv.find(".price").text())
+         // find .compare-at-price from the product div. Change it to a number.
+         let compare_price = getNumber(productdiv.find(".compare-atprice").text())
+         // Get a dicount code
+         let coupon = productdiv.find(".dsc-code").text()
+         // Get a real text for coupon code
+         if (coupon !== "") { coupon_text = coupon }
+         // Calculate discount.
+         let discount = 0
+         if (compare_price > 0) { discount = compare_price - price_text }
+         // extract product name from div
+         let product_text = productdiv.find(".margin-bottom-small.mobile-text-centre").text()
+         // Get quantity
+         let quantity_text = productdiv.find('.cart-quantity').attr("value")
+         quantity_text = getNumber(quantity_text)
+          // Add to total value of all products
+          value = value + (quantity_text*price_text)
+         // append product info as an object to our array
+         allItems.push({
+             item_id: sku_text,
+             item_name: product_text,
+             price: price_text,
+             discount: discount,
+             coupon: coupon,
+             currency: 'USD',
+             quantity: quantity_text
+         })
+     })
+     // store products array in cookie.
+     Cookies.set('checkout_items', JSON.stringify(allItems))
+     // Send data when checkout is clicked.
+     gtag('event', 'begin_checkout', {
+         currency: 'USD',
+          coupon: coupon_text,
+         value: value,
+         items: allItems
+     });
+     //Cont ...
+  })
+</script>

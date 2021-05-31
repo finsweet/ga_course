@@ -1,0 +1,62 @@
+<script>
+  $(document).ready(() => {
+    // variable for the product name
+    // variable for the product name
+    let product_name = "name";
+    // variable for the product category
+    let product_category = "type";
+    // variable for product price.
+    let product_price = getPrice("price");
+    // variable for compare at price
+    let compare_price = getPrice("compare-at-price");
+    // Calculate discount
+    let discount = 0;
+    if (compare_price > 0) {
+      discount = compare_price - product_price;
+    }
+    // the sku variable
+    let sku = "sku";
+    // A variable indicating if item has promotion.
+    let isPromotion = false;
+    // Check if a discount code is available for item
+    let discount_code = "discount-code";
+    // Change the isPromotion value to true if discount exists.
+    if (discount_code !== "") {
+      isPromotion = true;
+    }
+    // Get discount name.
+    let discount_name = "discount Name";
+
+    // get the quantity variable is 1 in when viewing an product.
+    let quantity = 1;
+    // add all product variables to a GA4 object
+    let item = {
+      item_id: sku,
+      item_name: product_name,
+      item_category: product_category,
+      discount: discount,
+      price: product_price,
+      currency: "USD",
+      quantity: quantity,
+    };
+
+    //Cont...
+
+    // Add  item to promotion array if its promotion var is true.
+    if (isPromotion == true) {
+      // copy the item object
+      let promotion_item = JSON.parse(JSON.stringify(item));
+      // Add promotion specific data to promotion item.
+      promotion_item["coupon"] = discount_code;
+      promotion_item["promotion_id"] = discount_code;
+      promotion_item["promotion_name"] = discount_name;
+      /* Add view promotion event */
+      // send data to the via gtag.
+      // Our promotion_items array is added to the 'items' key in our GA4 object.
+      gtag("event", "view_promotion", {
+        items: [promotion_item],
+        location_id: "L_12345",
+      });
+    }
+  });
+</script>

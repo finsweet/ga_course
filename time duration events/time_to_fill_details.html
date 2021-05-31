@@ -1,0 +1,17 @@
+<script>
+  /* Send data for fill in details time */
+  // Get start time string
+  let checkout_time = Cookies.get("checkout_time");
+  // convert it into a date
+  checkout_time = Date.parse(checkout_time);
+  endTime = new Date();
+  let timeDiff = endTime - checkout_time; //in ms
+  // strip the ms
+  timeDiff /= 1000;
+  // get minutes
+  let timeToDetailsFilled = Math.round(timeDiff / 60);
+  // Send custom event data for our timer.
+  gtag("event", "time_to_fill_details", {
+    value: timeToDetailsFilled,
+  });
+</script>
