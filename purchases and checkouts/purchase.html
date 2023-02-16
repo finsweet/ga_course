@@ -13,7 +13,7 @@
   gtag("event", "purchase", {
     currency: "USD",
     items: checkout_items,
-    transaction_id: "T_12345",
+    transaction_id: crypto.randomUUID(),
     coupon: Cookies.get("coupon_code"),
     value: total_cost,
     shipping: shipping_cost,
